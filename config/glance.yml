@@ -198,7 +198,7 @@ pages:
                     url: https://blog.fs0ciety.org
                     icon: si:ghost
                   - title: Immich
-                    url: https://photos.fs0ciety.org
+                    url: https://termix.fs0ciety.org
                     icon: sh:immich
                   - title: Pairdrop
                     url: https://drop.fs0ciety.org
