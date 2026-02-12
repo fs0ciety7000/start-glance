@@ -93,7 +93,7 @@ pages:
                 url: https://img.fs0ciety.org
                 icon: sh:mazanoke
               - title: Termix
-                url: https://exit.fs0ciety.org
+                url: https://termix.fs0ciety.org
                 icon: si:gnometerminal
               - title: Your Spotify
                 url: https://spotify.fs0ciety.org
@@ -104,6 +104,9 @@ pages:
               - title: Bento PDF
                 url: ${BENTO_PDF_URL}
                 icon: si:adobeacrobatreader
+              - title: Uptime Kuma
+                url: ${KUMA_URL}
+                icon: sh:uptime-kuma
 
       # ── Center column ─────────────────────────────────────────
       - size: full
@@ -156,6 +159,24 @@ pages:
                 cache: 30m
                 feeds:
                   - url: https://www.reddit.com/r/piracy/hot.rss
+
+              - type: rss
+                title: r/Qubes
+                style: vertical-list
+                limit: 15
+                collapse-after: 5
+                cache: 30m
+                feeds:
+                  - url: https://www.reddit.com/r/Qubes/hot.rss
+
+              - type: rss
+                title: r/privacytoolsIO
+                style: vertical-list
+                limit: 15
+                collapse-after: 5
+                cache: 30m
+                feeds:
+                  - url: https://www.reddit.com/r/privacytoolsIO/hot.rss
 
               - type: hacker-news
                 title: Hacker News
@@ -224,6 +245,9 @@ pages:
                   - title: Coolify
                     url: http://100.122.105.13
                     icon: sh:coolify
+                  - title: Uptime Kuma
+                    url: ${KUMA_URL}
+                    icon: sh:uptime-kuma
 
               - title: Media
                 color: 30 80 60
