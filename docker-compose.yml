@@ -6,7 +6,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - .:/app/config:ro
+      - ./config:/app/config:ro
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
