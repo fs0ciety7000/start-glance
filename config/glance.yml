@@ -535,14 +535,8 @@ pages:
               {{ $mediaServer := .Options.StringOr "media-server" "" }}
               {{ $baseURL := .Options.StringOr "base-url" "" }}
               {{ $apiKey := .Options.StringOr "api-key" "" }}
-              {{ define "errorMsg2" }}
-                <div class="widget-error-header">
-                  <div class="color-negative size-h3">ERROR</div>
-                </div>
-                <p class="break-all">{{ . }}</p>
-              {{ end }}
               {{ if or (eq $mediaServer "") (eq $baseURL "") (eq $apiKey "") }}
-                {{ template "errorMsg2" "Options manquantes" }}
+                <p class="color-negative">Options manquantes</p>
               {{ else }}
               {{ $isSmallColumn := .Options.BoolOr "small-column" false }}
               {{ $isCompact := .Options.BoolOr "compact" true }}
