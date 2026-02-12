@@ -137,6 +137,7 @@ pages:
                 collapse-after: 5
                 sort-by: hot
                 cache: 30m
+                request-url-template: https://old.reddit.com/r/{subreddit}/{sort}.json?limit={limit}
 
               - type: reddit
                 title: r/privacy
@@ -146,6 +147,7 @@ pages:
                 collapse-after: 5
                 sort-by: hot
                 cache: 30m
+                request-url-template: https://old.reddit.com/r/{subreddit}/{sort}.json?limit={limit}
 
               - type: reddit
                 title: r/piracy
@@ -155,6 +157,7 @@ pages:
                 collapse-after: 5
                 sort-by: hot
                 cache: 30m
+                request-url-template: https://old.reddit.com/r/{subreddit}/{sort}.json?limit={limit}
 
       # ── Right column ──────────────────────────────────────────
       - size: small
