@@ -1,0 +1,565 @@
+server:
+  host: 0.0.0.0
+  port: 8080
+
+theme:
+  light: false
+  background-color: 225 14 10
+  primary-color: 157 64 60
+  positive-color: 115 54 76
+  negative-color: 0 90 60
+  contrast-multiplier: 1.1
+  text-saturation-multiplier: 0.5
+
+branding:
+  logo-text: fs0ciety
+  favicon-url: https://fs0ciety.org/favicon.ico
+
+pages:
+  # ============================================================
+  #  HOME
+  # ============================================================
+  - name: Home
+    slug: home
+    width: wide
+    head-widgets:
+      - type: search
+        search-engine: duckduckgo
+        autofocus: true
+
+    columns:
+      # ── Left column ──────────────────────────────────────────
+      - size: small
+        widgets:
+          - type: clock
+            hour-format: 24h
+            timezones:
+              - timezone: Europe/Brussels
+                label: Mons
+
+          - type: weather
+            location: Mons, Belgium
+            hour-format: 24h
+            units: metric
+
+          - type: calendar
+            first-day-of-week: monday
+
+          - type: custom-api
+            title: Immich Stats
+            title-url: ${IMMICH_URL}
+            cache: 1d
+            url: ${IMMICH_URL}/api/server/statistics
+            headers:
+              x-api-key: ${IMMICH_API_KEY}
+              Accept: application/json
+            template: |
+              <div class="flex justify-between text-center">
+                <div>
+                    <div class="color-highlight size-h3">{{ .JSON.Int "photos" | formatNumber }}</div>
+                    <div class="size-h6">PHOTOS</div>
+                </div>
+                <div>
+                    <div class="color-highlight size-h3">{{ .JSON.Int "videos" | formatNumber }}</div>
+                    <div class="size-h6">VIDEOS</div>
+                </div>
+                <div>
+                    <div class="color-highlight size-h3">{{ div (.JSON.Int "usage" | toFloat) 1073741824 | toInt | formatNumber }}GB</div>
+                    <div class="size-h6">USAGE</div>
+                </div>
+              </div>
+
+          - type: monitor
+            title: Services
+            cache: 5m
+            sites:
+              - title: Immich
+                url: ${IMMICH_URL}
+                icon: sh:immich
+              - title: Pairdrop
+                url: https://drop.fs0ciety.org
+                icon: sh:pairdrop
+              - title: KitchenOwl
+                url: https://cook.fs0ciety.org
+                icon: sh:kitchenowl
+              - title: Paperless
+                url: https://docs.fs0ciety.org
+                icon: sh:paperless-ngx
+              - title: Gitea
+                url: https://git.fs0ciety.org
+                icon: si:gitea
+              - title: Mazanoke
+                url: https://img.fs0ciety.org
+                icon: si:image
+              - title: Termix
+                url: https://exit.fs0ciety.org
+                icon: si:gnometerminal
+              - title: Your Spotify
+                url: https://spotify.fs0ciety.org
+                icon: si:spotify
+              - title: Documenso
+                url: https://sign.fs0ciety.org
+                icon: si:docusign
+              - title: Bento PDF
+                url: ${BENTO_PDF_URL}
+                icon: si:adobeacrobatreader
+
+      # ── Center column ─────────────────────────────────────────
+      - size: full
+        widgets:
+          - type: group
+            widgets:
+              - type: rss
+                title: Tech News
+                style: vertical-list
+                cache: 30m
+                limit: 20
+                collapse-after: 8
+                feeds:
+                  - url: https://korben.info/feed
+                    title: Korben
+                  - url: https://www.theverge.com/rss/index.xml
+                    title: The Verge
+                  - url: https://techcrunch.com/feed/
+                    title: TechCrunch
+                  - url: https://www.wired.com/feed/rss
+                    title: Wired
+                  - url: https://fs0ciety.org/blog/rss
+                    title: fs0ciety
+                  - url: https://noted.lol/rss
+                    title: Noted.lol
+
+              - type: reddit
+                title: r/selfhosted
+                subreddit: selfhosted
+                style: vertical-list
+                limit: 15
+                collapse-after: 5
+                sort-by: hot
+                cache: 30m
+
+              - type: reddit
+                title: r/privacy
+                subreddit: privacy
+                style: vertical-list
+                limit: 15
+                collapse-after: 5
+                sort-by: hot
+                cache: 30m
+
+              - type: reddit
+                title: r/piracy
+                subreddit: piracy
+                style: vertical-list
+                limit: 15
+                collapse-after: 5
+                sort-by: hot
+                cache: 30m
+
+      # ── Right column ──────────────────────────────────────────
+      - size: small
+        widgets:
+          - type: bookmarks
+            title: Liens
+            groups:
+              - title: Quotidien
+                color: 157 64 60
+                links:
+                  - title: YouTube
+                    url: https://www.youtube.com
+                    icon: si:youtube
+                  - title: Reddit
+                    url: https://www.reddit.com
+                    icon: si:reddit
+                  - title: Gmail
+                    url: https://mail.google.com
+                    icon: si:gmail
+                  - title: Proton Mail
+                    url: https://mail.proton.me
+                    icon: si:protonmail
+                  - title: Google Drive
+                    url: https://drive.google.com
+                    icon: si:googledrive
+                  - title: Proton Drive
+                    url: https://drive.proton.me
+                    icon: si:protondrive
+                  - title: Claude
+                    url: https://claude.ai
+                    icon: si:anthropic
+
+              - title: Self-hosted
+                color: 200 60 50
+                links:
+                  - title: Immich
+                    url: https://photos.fs0ciety.org
+                    icon: sh:immich
+                  - title: Pairdrop
+                    url: https://drop.fs0ciety.org
+                    icon: sh:pairdrop
+                  - title: KitchenOwl
+                    url: https://cook.fs0ciety.org
+                    icon: sh:kitchenowl
+                  - title: Paperless
+                    url: https://docs.fs0ciety.org
+                    icon: sh:paperless-ngx
+                  - title: Gitea
+                    url: https://git.fs0ciety.org
+                    icon: si:gitea
+                  - title: Documenso
+                    url: https://sign.fs0ciety.org
+                    icon: si:docusign
+
+              - title: Media
+                color: 30 80 60
+                links:
+                  - title: Plex
+                    url: ${PLEX_URL}
+                    icon: si:plex
+                  - title: Sonarr
+                    url: ${SONARR_URL}
+                    icon: si:sonarr
+                  - title: Radarr
+                    url: ${RADARR_URL}
+                    icon: si:radarr
+                  - title: Jellyseerr
+                    url: ${JELLYSEERR_URL}
+                    icon: sh:jellyseerr
+                  - title: qBittorrent
+                    url: ${QBIT_URL}
+                    icon: si:qbittorrent
+                  - title: SABnzbd
+                    url: ${SABNZBD_URL}
+                    icon: sh:sabnzbd
+
+  # ============================================================
+  #  MEDIA
+  # ============================================================
+  - name: Media
+    slug: media
+    width: wide
+
+    columns:
+      # ── Left: Plex ────────────────────────────────────────────
+      - size: full
+        widgets:
+          - type: custom-api
+            title: Plex - En cours
+            title-url: ${PLEX_URL}/web
+            cache: 1m
+            options:
+              media-server: "plex"
+              base-url: ${PLEX_URL}
+              api-key: ${PLEX_TOKEN}
+              small-column: false
+              compact: true
+              play-state: "indicator"
+              show-thumbnail: true
+              full-thumbnail: false
+              show-paused: true
+              show-progress-bar: true
+              show-progress-info: true
+              time-format: "15:04"
+            template: |
+              {{ $mediaServer := .Options.StringOr "media-server" "" }}
+              {{ $baseURL := .Options.StringOr "base-url" "" }}
+              {{ $apiKey := .Options.StringOr "api-key" "" }}
+              {{ define "errorMsg" }}
+                <div class="widget-error-header">
+                  <div class="color-negative size-h3">ERROR</div>
+                </div>
+                <p class="break-all">{{ . }}</p>
+              {{ end }}
+              {{ if or (eq $mediaServer "") (eq $baseURL "") (eq $apiKey "") }}
+                {{ template "errorMsg" "Options manquantes" }}
+              {{ else }}
+              {{ $isSmallColumn := .Options.BoolOr "small-column" false }}
+              {{ $isCompact := .Options.BoolOr "compact" true }}
+              {{ $playState := .Options.StringOr "play-state" "indicator" }}
+              {{ $showThumbnail := .Options.BoolOr "show-thumbnail" false }}
+              {{ $fullThumbnail := .Options.BoolOr "full-thumbnail" false }}
+              {{ $showPaused := .Options.BoolOr "show-paused" false }}
+              {{ $showProgressBar := .Options.BoolOr "show-progress-bar" false }}
+              {{ $showProgressInfo := .Options.BoolOr "show-progress-info" true }}
+              {{ $timeFormat := .Options.StringOr "time-format" "15:04" }}
+              {{ $sessionsRequestURL := concat $baseURL "/status/sessions" }}
+              {{ $sessionsCall := newRequest $sessionsRequestURL
+                | withHeader "Accept" "application/json"
+                | withHeader "X-Plex-Token" $apiKey
+                | getResponse }}
+              {{ $sessions := "" }}
+              {{ $activeSessions := 0 }}
+              {{ if $sessionsCall.JSON.Exists "MediaContainer" }}
+                {{ $sessions = $sessionsCall.JSON.Array "MediaContainer.Metadata" }}
+                {{ $activeSessions = len $sessions }}
+              {{ end }}
+              {{ if eq $activeSessions 0 }}
+                <p>Rien en lecture actuellement.</p>
+              {{ else }}
+                <style>
+                  .media-server-session-container--grid { display: grid; grid-template-columns: repeat(2, 1fr); }
+                  @media (max-width: 768px) { .media-server-session-container--grid { display: flex; flex-direction: column; } }
+                  .media-server-progress-container { height: 1rem; max-width: 32rem; border: 1px solid var(--color-text-base); border-radius: var(--border-radius); overflow: hidden; }
+                  .media-server-progress-bar { height: 100%; background: var(--color-primary); border-radius: 3px; transition: width 1s linear; }
+                  @keyframes progress-animation { to { width: 100%; } }
+                </style>
+                <div class="gap-10 {{ if $isSmallColumn }}flex flex-column{{ else }}media-server-session-container--grid{{ end }}">
+                {{ range $i, $session := $sessions }}
+                  {{ $isPlaying := eq ($session.String "Player.state") "playing" }}
+                  {{ $state := "playing" }}
+                  {{ if not $isPlaying }}{{ $state = "paused" }}{{ end }}
+                  {{ $mediaType := $session.String "type" }}
+                  {{ $isMovie := eq $mediaType "movie" }}
+                  {{ $isShows := eq $mediaType "episode" }}
+                  {{ $isMusic := eq $mediaType "track" }}
+                  {{ $userName := $session.String "User.title" }}
+                  {{ $title := $session.String "title" }}
+                  {{ $showTitle := $session.String "grandparentTitle" }}
+                  {{ $showSeason := $session.String "parentIndex" }}
+                  {{ $showEpisode := $session.String "index" }}
+                  {{ $artist := $session.String "grandparentTitle" }}
+                  {{ $albumTitle := $session.String "parentTitle" }}
+                  {{ $thumbID := $session.String "thumb" }}
+                  {{ if or $isShows $isMusic }}
+                    {{ $thumbID = $session.String "parentThumb" }}
+                  {{ end }}
+                  {{ $thumbURL := concat $baseURL $thumbID "?X-Plex-Token=" $apiKey }}
+                  {{ $now := now | formatTime "15:04:05" | parseLocalTime "15:04:05" }}
+                  {{ $duration := $session.Float "duration" }}
+                  {{ $offset := $session.Float "viewOffset" }}
+                  {{ $remainingSeconds := div (sub $duration $offset) 1000 | toInt }}
+                  {{ $progress := mul 100 (div $offset $duration) | toInt }}
+                  {{ $endTime := $now.Add (duration (printf "%ds" $remainingSeconds)) | formatTime $timeFormat }}
+                  {{ if or $isPlaying $showPaused }}
+                  <div class="card gap-5">
+                    <div class="flex items-center gap-10 size-h3">
+                      <span class="color-primary">{{ $userName }}</span>
+                      {{ if eq $playState "indicator" }}
+                        <style>
+                          .media-server-indicator { height: .7rem; width: .7rem; border-radius: 100%;
+                            {{ if $isPlaying }} animation: pulse 5s infinite; background: var(--color-primary);
+                            {{ else }} background: var(--color-text-base-muted); {{ end }} }
+                          @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--color-text-base); } 40% { box-shadow: 0 0 0 4px transparent; } 100% { box-shadow: 0 0 0 4px transparent; } }
+                        </style>
+                        <div class="media-server-indicator"></div>
+                      {{ else }}
+                        <span {{ if $isPlaying }}class="color-primary"{{ end }}>[{{ $state }}]</span>
+                      {{ end }}
+                    </div>
+                    <hr class="margin-bottom-5" />
+                    <div class="flex items-center gap-10" style="align-items: stretch;">
+                      {{ if $showThumbnail }}
+                        <img src="{{ $thumbURL | safeURL }}" alt="{{ $title }}" class="shrink-0" loading="lazy" style="max-width: 7.5rem; border: 2px solid var(--color-primary); border-radius: var(--border-radius); object-fit: cover; {{ if and $isCompact (not $fullThumbnail) }}aspect-ratio: 1;{{ end }}" />
+                      {{ end }}
+                      <ul class="flex flex-column grow justify-evenly" style="width: 0;">
+                        {{ if $isCompact }}
+                          {{ if $isShows }}
+                            <ul class="list-horizontal-text flex-nowrap">
+                              <li class="shrink-0">{{ concat "S" $showSeason "E" $showEpisode }}</li>
+                              <li class="text-truncate">{{ $showTitle }}</li>
+                            </ul>
+                          {{ else if $isMusic }}
+                            <ul class="list-horizontal-text flex-nowrap">
+                              <li class="shrink-0">{{ $artist }}</li>
+                              <li class="text-truncate">{{ $albumTitle }}</li>
+                            </ul>
+                          {{ end }}
+                          <li class="text-truncate">{{ $title }}</li>
+                        {{ else }}
+                          {{ if $isShows }}<li>{{ $showTitle }}</li><li>{{ concat "S" $showSeason "E" $showEpisode }}</li>
+                          {{ else if $isMusic }}<li>{{ $artist }}</li><li>{{ $albumTitle }}</li>{{ end }}
+                          <li>{{ $title }}</li>
+                        {{ end }}
+                        <li>
+                          {{ if and $isPlaying $showProgressBar }}
+                            <div class="flex gap-10 items-center">
+                              <div class="media-server-progress-container grow">
+                                <div class="media-server-progress-bar" style="width: {{ $progress }}%; animation: progress-animation {{ $remainingSeconds }}s linear forwards;"></div>
+                              </div>
+                              {{ if $showProgressInfo }}<p>{{ $endTime }}</p>{{ end }}
+                            </div>
+                          {{ end }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  {{ end }}
+                {{ end }}
+              </div>
+              {{ end }}
+              {{ end }}
+
+          - type: custom-api
+            title: Plex - Historique
+            title-url: ${PLEX_URL}/web
+            frameless: true
+            cache: 5m
+            options:
+              media-server: "plex"
+              base-url: ${PLEX_URL}
+              api-key: ${PLEX_TOKEN}
+              history-length: "12"
+              small-column: false
+              compact: true
+              show-thumbnail: true
+              thumbnail-aspect-ratio: "portrait"
+              show-user: true
+              time-absolute: false
+              time-format: "Jan 02 15:04"
+            template: |
+              {{ $baseURL := .Options.StringOr "base-url" "" }}
+              {{ $apiKey := .Options.StringOr "api-key" "" }}
+              {{ if or (eq $baseURL "") (eq $apiKey "") }}
+                <p class="color-negative">Options manquantes</p>
+              {{ else }}
+              {{ $historyLength := .Options.StringOr "history-length" "10" }}
+              {{ $isCompact := .Options.BoolOr "compact" true }}
+              {{ $showThumbnail := .Options.BoolOr "show-thumbnail" false }}
+              {{ $thumbAspectRatio := .Options.StringOr "thumbnail-aspect-ratio" "" }}
+              {{ $showUser := .Options.BoolOr "show-user" true }}
+              {{ $timeAbsolute := .Options.BoolOr "time-absolute" false }}
+              {{ $timeFormat := .Options.StringOr "time-format" "Jan 02 15:04" }}
+              {{ $historyCall := newRequest (concat $baseURL "/status/sessions/history/all")
+                | withParameter "limit" $historyLength
+                | withParameter "sort" "viewedAt:desc"
+                | withHeader "Accept" "application/json"
+                | withHeader "X-Plex-Token" $apiKey
+                | getResponse }}
+              {{ $history := "" }}
+              {{ if $historyCall.JSON.Exists "MediaContainer" }}
+                {{ $history = $historyCall.JSON.Array "MediaContainer.Metadata" }}
+              {{ end }}
+              {{ $usersCall := newRequest (concat $baseURL "/accounts")
+                | withHeader "Accept" "application/json"
+                | withHeader "X-Plex-Token" $apiKey
+                | getResponse }}
+              {{ $users := $usersCall.JSON.Array "MediaContainer.Account" }}
+              {{ if eq (len $history) 0 }}
+                <p>Aucun historique disponible.</p>
+              {{ else }}
+                <div class="carousel-container show-right-cutoff">
+                  <div class="cards-horizontal carousel-items-container">
+                    {{ range $n, $item := $history }}
+                      {{ $userName := "" }}
+                      {{ $userID := $item.Int "accountID" }}
+                      {{ range $u := $users }}
+                        {{ if eq $userID ($u.Int "id") }}{{ $userName = $u.String "name" }}{{ break }}{{ end }}
+                      {{ end }}
+                      {{ $mediaType := $item.String "type" }}
+                      {{ $isShows := eq $mediaType "episode" }}
+                      {{ $isMusic := eq $mediaType "track" }}
+                      {{ $title := $item.String "title" }}
+                      {{ $showTitle := "" }}{{ $showSeason := "" }}{{ $showEpisode := "" }}
+                      {{ $artist := "" }}{{ $albumTitle := "" }}
+                      {{ if $isShows }}
+                        {{ $showTitle = $item.String "grandparentTitle" }}
+                        {{ $showSeason = $item.String "parentIndex" }}
+                        {{ $showEpisode = $item.String "index" }}
+                      {{ else if $isMusic }}
+                        {{ $artist = $item.String "grandparentTitle" }}
+                        {{ $albumTitle = $item.String "parentTitle" }}
+                      {{ end }}
+                      {{ $thumbID := $item.String "thumb" }}
+                      {{ if or $isShows $isMusic }}{{ $thumbID = $item.String "parentThumb" }}{{ end }}
+                      {{ $thumbURL := concat $baseURL $thumbID "?X-Plex-Token=" $apiKey }}
+                      {{ $time := $item.String "viewedAt" }}
+                      {{ $playedAt := "" }}
+                      {{ if $timeAbsolute }}
+                        {{ $playedAt = $time | parseLocalTime "unix" | formatTime $timeFormat }}
+                      {{ else }}
+                        {{ $playedAt = $time | parseRelativeTime "unix" }}
+                      {{ end }}
+                      <div class="card widget-content-frame">
+                        {{ if $showThumbnail }}
+                          <img src="{{ $thumbURL | safeURL }}" alt="{{ $title }}" loading="lazy" class="shrink-0" style="object-fit: cover; border-radius: var(--border-radius) var(--border-radius) 0 0; {{ if eq $thumbAspectRatio "square" }}aspect-ratio: 1;{{ else if eq $thumbAspectRatio "portrait" }}aspect-ratio: 3/4;{{ else if eq $thumbAspectRatio "landscape" }}aspect-ratio: 4/3;{{ else }}aspect-ratio: initial;{{ end }}" />
+                        {{ end }}
+                        <div class="grow padding-inline-widget margin-top-10 margin-bottom-10">
+                          <ul class="flex flex-column justify-evenly margin-bottom-3" style="height: 100%;">
+                            <ul class="list-horizontal-text flex-nowrap">
+                              {{ if $showUser }}<li class="color-primary text-truncate">{{ $userName }}</li>{{ end }}
+                              {{ if $timeAbsolute }}
+                                <li class="text-truncate">{{ $playedAt }}</li>
+                              {{ else }}
+                                <li class="shrink-0"><span {{ $playedAt }}></span></li>
+                              {{ end }}
+                            </ul>
+                            {{ if $isShows }}
+                              <ul class="list-horizontal-text flex-nowrap">
+                                <li class="text-truncate">{{ concat "S" $showSeason "E" $showEpisode }}</li>
+                                <li class="text-truncate">{{ $showTitle }}</li>
+                              </ul>
+                            {{ else if $isMusic }}
+                              <ul class="list-horizontal-text flex-nowrap">
+                                <li class="text-truncate">{{ $artist }}</li>
+                                <li class="text-truncate">{{ $albumTitle }}</li>
+                              </ul>
+                            {{ end }}
+                            <li class="text-truncate">{{ $title }}</li>
+                          </ul>
+                        </div>
+                      </div>
+                    {{ end }}
+                  </div>
+                </div>
+              {{ end }}
+              {{ end }}
+
+      # ── Right: Sonarr / Radarr / Jellyseerr ──────────────────
+      - size: full
+        widgets:
+          - type: group
+            widgets:
+              - $include: widgets/sonarr-upcoming.yml
+              - $include: widgets/sonarr-recent.yml
+              - $include: widgets/sonarr-missing.yml
+              - $include: widgets/radarr-upcoming.yml
+              - $include: widgets/radarr-recent.yml
+              - $include: widgets/radarr-missing.yml
+
+          - type: custom-api
+            title: Jellyseerr - Requetes
+            title-url: ${JELLYSEERR_URL}/requests
+            url: ${JELLYSEERR_URL}/api/v1/request/count
+            cache: 1h
+            options:
+              small-column: false
+              compact: false
+            headers:
+              accept: "application/json"
+              x-api-key: ${JELLYSEERR_API_KEY}
+            template: |
+              {{ if eq .Response.StatusCode 200 }}
+                <div class="flex justify-evenly text-center">
+                  <div>
+                    <div class="color-highlight size-h1">{{ .JSON.Int "total" | formatNumber }}</div>
+                    <div class="size-h3">Total</div>
+                  </div>
+                  <div>
+                    <div class="color-highlight size-h1">{{ .JSON.Int "movie" | formatNumber }}</div>
+                    <div class="size-h3">Films</div>
+                  </div>
+                  <div>
+                    <div class="color-highlight size-h1">{{ .JSON.Int "tv" | formatNumber }}</div>
+                    <div class="size-h3">Series</div>
+                  </div>
+                </div>
+                <div class="flex justify-evenly text-center margin-top-20">
+                  <div>
+                    <div class="color-highlight size-h1">{{ .JSON.Int "pending" | formatNumber }}</div>
+                    <div class="size-h3">En attente</div>
+                  </div>
+                  <div>
+                    <div class="color-highlight size-h1">{{ .JSON.Int "approved" | formatNumber }}</div>
+                    <div class="size-h3">Approuvees</div>
+                  </div>
+                  <div>
+                    <div class="color-highlight size-h1">{{ .JSON.Int "processing" | formatNumber }}</div>
+                    <div class="size-h3">En cours</div>
+                  </div>
+                  <div>
+                    <div class="color-highlight size-h1">{{ .JSON.Int "available" | formatNumber }}</div>
+                    <div class="size-h3">Disponibles</div>
+                  </div>
+                </div>
+              {{ else }}
+                <p class="color-negative">Impossible de contacter Jellyseerr ({{ .Response.StatusCode }})</p>
+              {{ end }}
