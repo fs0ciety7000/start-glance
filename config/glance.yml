@@ -13,6 +13,7 @@ theme:
 
 branding:
   logo-text: fs0ciety
+  logo-url: https://fs0ciety.org/logo.svg
   favicon-url: https://fs0ciety.org/favicon.ico
 
 pages:
@@ -193,6 +194,12 @@ pages:
               - title: Self-hosted
                 color: 200 60 50
                 links:
+                  - title: fs0ciety.org
+                    url: https://fs0ciety.org
+                    icon: https://fs0ciety.org/logo.svg
+                  - title: Blog
+                    url: https://blog.fs0ciety.org
+                    icon: si:ghost
                   - title: Immich
                     url: https://photos.fs0ciety.org
                     icon: sh:immich
