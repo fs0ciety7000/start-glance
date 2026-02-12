@@ -514,8 +514,6 @@ pages:
               {{ end }}
 
       # ── Plex Citadel ───────────────────────────────────────────
-      - size: full
-        widgets:
           - type: custom-api
             title: Plex Citadel - En cours
             title-url: ${PLEX2_URL}/web
