@@ -130,35 +130,32 @@ pages:
                   - url: https://noted.lol/rss
                     title: Noted.lol
 
-              - type: reddit
+              - type: rss
                 title: r/selfhosted
-                subreddit: selfhosted
                 style: vertical-list
                 limit: 15
                 collapse-after: 5
-                sort-by: hot
                 cache: 30m
-                request-url-template: https://old.reddit.com/r/{subreddit}/{sort}.json?limit={limit}
+                feeds:
+                  - url: https://www.reddit.com/r/selfhosted/hot.rss
 
-              - type: reddit
+              - type: rss
                 title: r/privacy
-                subreddit: privacy
                 style: vertical-list
                 limit: 15
                 collapse-after: 5
-                sort-by: hot
                 cache: 30m
-                request-url-template: https://old.reddit.com/r/{subreddit}/{sort}.json?limit={limit}
+                feeds:
+                  - url: https://www.reddit.com/r/privacy/hot.rss
 
-              - type: reddit
+              - type: rss
                 title: r/piracy
-                subreddit: piracy
                 style: vertical-list
                 limit: 15
                 collapse-after: 5
-                sort-by: hot
                 cache: 30m
-                request-url-template: https://old.reddit.com/r/{subreddit}/{sort}.json?limit={limit}
+                feeds:
+                  - url: https://www.reddit.com/r/piracy/hot.rss
 
       # ── Right column ──────────────────────────────────────────
       - size: small
