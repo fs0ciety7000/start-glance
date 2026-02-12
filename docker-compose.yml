@@ -6,8 +6,8 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ./glance.yml:/app/glance.yml
-      - ./widgets:/app/widgets
+      - ./glance.yml:/app/config/glance.yml
+      - ./widgets:/app/config/widgets
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
