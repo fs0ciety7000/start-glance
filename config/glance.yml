@@ -49,7 +49,7 @@ pages:
           - type: custom-api
             title: Immich Stats
             title-url: ${IMMICH_URL}
-            cache: 1d
+            cache: 5m
             url: ${IMMICH_URL}/api/server/statistics
             headers:
               x-api-key: ${IMMICH_API_KEY}
@@ -91,7 +91,7 @@ pages:
                 icon: si:gitea
               - title: Mazanoke
                 url: https://img.fs0ciety.org
-                icon: si:image
+                icon: sh:mazanoke
               - title: Termix
                 url: https://exit.fs0ciety.org
                 icon: si:gnometerminal
@@ -157,6 +157,12 @@ pages:
                 feeds:
                   - url: https://www.reddit.com/r/piracy/hot.rss
 
+              - type: hacker-news
+                title: Hacker News
+                limit: 15
+                collapse-after: 5
+                cache: 30m
+
       # ── Right column ──────────────────────────────────────────
       - size: small
         widgets:
@@ -215,6 +221,9 @@ pages:
                   - title: Documenso
                     url: https://sign.fs0ciety.org
                     icon: si:docusign
+                  - title: Coolify
+                    url: http://100.122.105.13
+                    icon: sh:coolify
 
               - title: Media
                 color: 30 80 60
