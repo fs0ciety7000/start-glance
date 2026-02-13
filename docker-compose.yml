@@ -10,3 +10,16 @@ services:
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: unless-stopped
+    ports:
+      - 3001:3001
+    volumes:
+      - uptime-kuma-data:/app/data
+      - /etc/localtime:/etc/localtime:ro
+
+volumes:
+  uptime-kuma-data:
