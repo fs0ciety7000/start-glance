@@ -474,11 +474,11 @@ pages:
                       {{ $wtype = "Fog" }}
                       {{ $wicon = "fas fa-smog" }}
                       {{ $wcolor = $color_smog }}
-                    {{ else if has $code [51 53 55 56 57] }}
+                    {{ else if or (eq $code 51) (eq $code 53) (eq $code 55) (eq $code 56) (eq $code 57) }}
                       {{ $wtype = "Drizzle" }}
                       {{ $wicon = "fas fa-cloud-rain" }}
                       {{ $wcolor = $color_drizzle }}
-                    {{ else if has $code [61 63 65 80 81 82] }}
+                    {{ else if or (eq $code 61) (eq $code 63) (eq $code 65) (eq $code 80) (eq $code 81) (eq $code 82) }}
                       {{ $wtype = "Rain" }}
                       {{ $wicon = "fas fa-cloud-showers-heavy" }}
                       {{ $wcolor = $color_rain }}
@@ -486,11 +486,11 @@ pages:
                       {{ $wtype = "Freezing Rain" }}
                       {{ $wicon = "fas fa-snowflake" }}
                       {{ $wcolor = $color_freezing_rain }}
-                    {{ else if has $code [71 73 75 77 85 86] }}
+                    {{ else if or (eq $code 71) (eq $code 73) (eq $code 75) (eq $code 77) (eq $code 85) (eq $code 86) }}
                       {{ $wtype = "Snow" }}
                       {{ $wicon = "fas fa-snowman" }}
                       {{ $wcolor = $color_snow }}
-                    {{ else if has $code [95 96 99] }}
+                    {{ else if or (eq $code 95) (eq $code 96) (eq $code 99) }}
                       {{ $wtype = "Thunderstorm" }}
                       {{ $wicon = "fas fa-bolt" }}
                       {{ $wcolor = $color_thunderstorm }}
