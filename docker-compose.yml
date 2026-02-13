@@ -8,6 +8,8 @@ services:
     volumes:
       - ./config:/app/config:ro
       - /etc/localtime:/etc/localtime:ro
+      - /mnt/storagebox:/mnt/storagebox:ro
+      - /mnt/pixeldrain:/mnt/pixeldrain:ro
     env_file:
       - .env
 
