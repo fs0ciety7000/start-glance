@@ -66,6 +66,56 @@ pages:
               </div>
 
           - type: custom-api
+            title: Astronomy Picture of the Day
+            cache: 1d
+            url: https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}
+            headers:
+              Accept: application/json
+            template: |
+              {{- if eq (.JSON.String "media_type") "image" -}}
+                <div style="display:flex; flex-direction:column; align-items:center; width:100%; padding:8px; box-sizing:border-box;">
+                  <p class="color-primary" style="margin:0 0 8px; text-align:center;">
+                    <a
+                       href="https://apod.nasa.gov/apod/astropix.html"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                      style="color: inherit; text-decoration: none;"
+                    >
+                      {{ .JSON.String "title" }}
+                    </a>
+                  </p>
+                  <img
+                    src="{{ .JSON.String "url" }}"
+                    alt="{{ .JSON.String "title" }}"
+                    style="max-width:100%; height:auto; display:block; border-radius:4px;"
+                  />
+                  <details style="width:100%; margin-top:12px;">
+                    <summary class="color-highlight size-h5" style="cursor:pointer;">
+                      Show Explanation
+                    </summary>
+                    <p class="color-highlight size-h5" style="margin-top:8px; text-align:left; line-height:1.4;">
+                      {{ .JSON.String "explanation" }}
+                    </p>
+                  </details>
+                </div>
+              {{- else -}}
+                <p class="color-negative" style="text-align:center;">
+                  No image available today.
+                </p>
+              {{- end }}
+
+          - type: custom-api
+            height: 200px
+            title: Random Dog
+            cache: 2m
+            url: https://dog.ceo/api/breeds/image/random
+            template: |
+              <img src="{{ .JSON.String "message" }}"></img>
+
+      # ── Center column ─────────────────────────────────────────
+      - size: full
+        widgets:
+          - type: custom-api
             title: Uptime Kuma
             title-url: ${UPTIME_KUMA_URL}
             url: ${UPTIME_KUMA_URL}/api/status-page/${UPTIME_KUMA_STATUS_SLUG}
@@ -123,94 +173,6 @@ pages:
                 {{ end }}
               </ul>
               {{ end }}
-
-          - type: custom-api
-            title: Astronomy Picture of the Day
-            cache: 1d
-            url: https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}
-            headers:
-              Accept: application/json
-            template: |
-              {{- if eq (.JSON.String "media_type") "image" -}}
-                <div style="display:flex; flex-direction:column; align-items:center; width:100%; padding:8px; box-sizing:border-box;">
-                  <p class="color-primary" style="margin:0 0 8px; text-align:center;">
-                    <a
-                       href="https://apod.nasa.gov/apod/astropix.html"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                      style="color: inherit; text-decoration: none;"
-                    >
-                      {{ .JSON.String "title" }}
-                    </a>
-                  </p>
-                  <img
-                    src="{{ .JSON.String "url" }}"
-                    alt="{{ .JSON.String "title" }}"
-                    style="max-width:100%; height:auto; display:block; border-radius:4px;"
-                  />
-                  <details style="width:100%; margin-top:12px;">
-                    <summary class="color-highlight size-h5" style="cursor:pointer;">
-                      Show Explanation
-                    </summary>
-                    <p class="color-highlight size-h5" style="margin-top:8px; text-align:left; line-height:1.4;">
-                      {{ .JSON.String "explanation" }}
-                    </p>
-                  </details>
-                </div>
-              {{- else -}}
-                <p class="color-negative" style="text-align:center;">
-                  No image available today.
-                </p>
-              {{- end }}
-
-          - type: custom-api
-            height: 200px
-            title: Random Dog
-            cache: 2m
-            url: https://dog.ceo/api/breeds/image/random
-            template: |
-              <img src="{{ .JSON.String "message" }}"></img>
-
-      # ── Center column ─────────────────────────────────────────
-      - size: full
-        widgets:
-          - type: monitor
-            title: Services
-            cache: 5m
-            sites:
-              - title: Immich
-                url: ${IMMICH_URL}
-                icon: sh:immich
-              - title: Pairdrop
-                url: https://drop.fs0ciety.org
-                icon: sh:pairdrop
-              - title: KitchenOwl
-                url: https://cook.fs0ciety.org
-                icon: sh:kitchenowl
-              - title: Paperless
-                url: https://docs.fs0ciety.org
-                icon: sh:paperless-ngx
-              - title: Gitea
-                url: https://git.fs0ciety.org
-                icon: si:gitea
-              - title: Mazanoke
-                url: https://img.fs0ciety.org
-                icon: sh:mazanoke
-              - title: Termix
-                url: https://termix.fs0ciety.org
-                icon: si:gnometerminal
-              - title: Your Spotify
-                url: https://spotify.fs0ciety.org
-                icon: si:spotify
-              - title: Documenso
-                url: https://sign.fs0ciety.org
-                icon: si:docusign
-              - title: Bento PDF
-                url: ${BENTO_PDF_URL}
-                icon: si:adobeacrobatreader
-              - title: Uptime Kuma
-                url: ${KUMA_URL}
-                icon: sh:uptime-kuma
 
           - type: group
             widgets:
