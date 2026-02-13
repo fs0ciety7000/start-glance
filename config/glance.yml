@@ -38,11 +38,6 @@ pages:
               - timezone: Europe/Brussels
                 label: Mons
 
-          - type: weather
-            location: Mons, Belgium
-            hour-format: 24h
-            units: metric
-
           - type: calendar
             first-day-of-week: monday
 
@@ -70,43 +65,64 @@ pages:
                 </div>
               </div>
 
-          - type: monitor
-            title: Services
-            cache: 5m
-            sites:
-              - title: Immich
-                url: ${IMMICH_URL}
-                icon: sh:immich
-              - title: Pairdrop
-                url: https://drop.fs0ciety.org
-                icon: sh:pairdrop
-              - title: KitchenOwl
-                url: https://cook.fs0ciety.org
-                icon: sh:kitchenowl
-              - title: Paperless
-                url: https://docs.fs0ciety.org
-                icon: sh:paperless-ngx
-              - title: Gitea
-                url: https://git.fs0ciety.org
-                icon: si:gitea
-              - title: Mazanoke
-                url: https://img.fs0ciety.org
-                icon: sh:mazanoke
-              - title: Termix
-                url: https://termix.fs0ciety.org
-                icon: si:gnometerminal
-              - title: Your Spotify
-                url: https://spotify.fs0ciety.org
-                icon: si:spotify
-              - title: Documenso
-                url: https://sign.fs0ciety.org
-                icon: si:docusign
-              - title: Bento PDF
-                url: ${BENTO_PDF_URL}
-                icon: si:adobeacrobatreader
-              - title: Uptime Kuma
-                url: ${KUMA_URL}
-                icon: sh:uptime-kuma
+          - type: custom-api
+            title: Uptime Kuma
+            title-url: ${UPTIME_KUMA_URL}
+            url: ${UPTIME_KUMA_URL}/api/status-page/${UPTIME_KUMA_STATUS_SLUG}
+            subrequests:
+              heartbeats:
+                url: ${UPTIME_KUMA_URL}/api/status-page/heartbeat/${UPTIME_KUMA_STATUS_SLUG}
+            cache: 10m
+            template: |
+              {{ $hb := .Subrequest "heartbeats" }}
+              {{ if not (.JSON.Exists "publicGroupList") }}
+              <p class="color-negative">Error reading response</p>
+              {{ else if eq (len (.JSON.Array "publicGroupList")) 0 }}
+              <p>No monitors found</p>
+              {{ else }}
+              <ul class="dynamic-columns list-gap-8">
+                {{ range .JSON.Array "publicGroupList" }}
+                {{ range .Array "monitorList" }}
+                {{ $id := .String "id" }}
+                {{ $hbArray := $hb.JSON.Array (print "heartbeatList." $id) }}
+                <div class="flex items-center gap-12">
+                  <a class="size-title-dynamic color-highlight text-truncate block grow" href="${UPTIME_KUMA_URL}/dashboard/{{ $id }}"
+                    target="_blank" rel="noreferrer">
+                    {{ .String "name" }} </a>
+                  {{ if gt (len $hbArray) 0 }}
+                    {{ $latest := index $hbArray (sub (len $hbArray) 1) }}
+                    {{ if eq ($latest.Int "status") 1 }}
+                    <div>{{ $latest.Int "ping" }}ms</div>
+                    <div class="monitor-site-status-icon-compact" title="OK">
+                      <svg fill="var(--color-positive)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                          d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
+                          clip-rule="evenodd"></path>
+                      </svg>
+                    </div>
+                    {{ else }}
+                    <div><span class="color-negative">DOWN</span></div>
+                    <div class="monitor-site-status-icon-compact" title="{{ if $latest.Exists "msg" }}{{ $latest.String "msg" }}{{ else }}Error{{ end }}">
+                      <svg fill="var(--color-negative)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                          d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                          clip-rule="evenodd"></path>
+                      </svg>
+                    </div>
+                    {{ end }}
+                  {{ else }}
+                    <div><span class="color-negative">No data</span></div>
+                    <div class="monitor-site-status-icon-compact" title="No data available">
+                      <svg fill="var(--color-negative)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M10 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm0-2a6 6 0 1 0 0-12 6 6 0 0 0 0 12zm-.75-8a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-1.5 0V8zm.75 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                      </svg>
+                    </div>
+                  {{ end }}
+                </div>
+                {{ end }}
+                {{ end }}
+              </ul>
+              {{ end }}
 
           - type: custom-api
             title: Astronomy Picture of the Day
@@ -158,6 +174,44 @@ pages:
       # ── Center column ─────────────────────────────────────────
       - size: full
         widgets:
+          - type: monitor
+            title: Services
+            cache: 5m
+            sites:
+              - title: Immich
+                url: ${IMMICH_URL}
+                icon: sh:immich
+              - title: Pairdrop
+                url: https://drop.fs0ciety.org
+                icon: sh:pairdrop
+              - title: KitchenOwl
+                url: https://cook.fs0ciety.org
+                icon: sh:kitchenowl
+              - title: Paperless
+                url: https://docs.fs0ciety.org
+                icon: sh:paperless-ngx
+              - title: Gitea
+                url: https://git.fs0ciety.org
+                icon: si:gitea
+              - title: Mazanoke
+                url: https://img.fs0ciety.org
+                icon: sh:mazanoke
+              - title: Termix
+                url: https://termix.fs0ciety.org
+                icon: si:gnometerminal
+              - title: Your Spotify
+                url: https://spotify.fs0ciety.org
+                icon: si:spotify
+              - title: Documenso
+                url: https://sign.fs0ciety.org
+                icon: si:docusign
+              - title: Bento PDF
+                url: ${BENTO_PDF_URL}
+                icon: si:adobeacrobatreader
+              - title: Uptime Kuma
+                url: ${KUMA_URL}
+                icon: sh:uptime-kuma
+
           - type: group
             widgets:
               - type: rss
@@ -244,129 +298,6 @@ pages:
       # ── Right column ──────────────────────────────────────────
       - size: small
         widgets:
-          - type: bookmarks
-            title: Liens
-            groups:
-              - title: Quotidien
-                color: 157 64 60
-                links:
-                  - title: YouTube
-                    url: https://www.youtube.com
-                    icon: si:youtube
-                  - title: Reddit
-                    url: https://www.reddit.com
-                    icon: si:reddit
-                  - title: Gmail
-                    url: https://mail.google.com
-                    icon: si:gmail
-                  - title: Proton Mail
-                    url: https://mail.proton.me
-                    icon: si:protonmail
-                  - title: Google Drive
-                    url: https://drive.google.com
-                    icon: si:googledrive
-                  - title: Proton Drive
-                    url: https://drive.proton.me
-                    icon: si:protondrive
-                  - title: Claude
-                    url: https://claude.ai
-                    icon: si:anthropic
-
-              - title: Self-hosted
-                color: 200 60 50
-                links:
-                  - title: fs0ciety.org
-                    url: https://fs0ciety.org
-                    icon: https://fs0ciety.org/logo.svg
-                  - title: Blog
-                    url: https://blog.fs0ciety.org
-                    icon: si:ghost
-                  - title: Immich
-                    url: https://photos.fs0ciety.org
-                    icon: sh:immich
-                  - title: Pairdrop
-                    url: https://drop.fs0ciety.org
-                    icon: sh:pairdrop
-                  - title: KitchenOwl
-                    url: https://cook.fs0ciety.org
-                    icon: sh:kitchenowl
-                  - title: Paperless
-                    url: https://docs.fs0ciety.org
-                    icon: sh:paperless-ngx
-                  - title: Gitea
-                    url: https://git.fs0ciety.org
-                    icon: si:gitea
-                  - title: Documenso
-                    url: https://sign.fs0ciety.org
-                    icon: si:docusign
-                  - title: Coolify
-                    url: http://100.122.105.13
-                    icon: sh:coolify
-                  - title: Uptime Kuma
-                    url: ${KUMA_URL}
-                    icon: sh:uptime-kuma
-
-              - title: Media
-                color: 30 80 60
-                links:
-                  - title: Plex NiftyBee
-                    url: ${PLEX_URL}
-                    icon: si:plex
-                  - title: Plex Citadel
-                    url: ${PLEX2_URL}
-                    icon: si:plex
-                  - title: Sonarr
-                    url: ${SONARR_URL}
-                    icon: si:sonarr
-                  - title: Radarr
-                    url: ${RADARR_URL}
-                    icon: si:radarr
-                  - title: Jellyseerr
-                    url: ${JELLYSEERR_URL}
-                    icon: sh:jellyseerr
-                  - title: qBittorrent
-                    url: ${QBIT_URL}
-                    icon: si:qbittorrent
-                  - title: SABnzbd
-                    url: ${SABNZBD_URL}
-                    icon: sh:sabnzbd
-
-          - type: custom-api
-            title: NBA Scores
-            cache: 15m
-            url: https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard
-            headers:
-              Accept: application/json
-            template: |
-              {{ $events := .JSON.Array "events" }}
-              {{ if eq (len $events) 0 }}
-                <p class="size-h5 color-subdue" style="text-align:center;">No games today</p>
-              {{ else }}
-                {{ range $events }}
-                  {{ $comp := index (.Array "competitions") 0 }}
-                  {{ $home := index ($comp.Array "competitors") 0 }}
-                  {{ $away := index ($comp.Array "competitors") 1 }}
-                  {{ $status := $comp.String "status.type.shortDetail" }}
-                  <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--color-separator);">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                      <img src="{{ $away.String "team.logo" }}" style="width:20px; height:20px;" />
-                      <span class="size-h5">{{ $away.String "team.abbreviation" }}</span>
-                    </div>
-                    <span class="size-h4 color-highlight">{{ $away.String "score" }}</span>
-                  </div>
-                  <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0;">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                      <img src="{{ $home.String "team.logo" }}" style="width:20px; height:20px;" />
-                      <span class="size-h5">{{ $home.String "team.abbreviation" }}</span>
-                    </div>
-                    <span class="size-h4 color-highlight">{{ $home.String "score" }}</span>
-                  </div>
-                  <div style="text-align:center; padding-bottom:8px; border-bottom:1px solid var(--color-separator); margin-bottom:4px;">
-                    <span class="size-h6 color-subdue">{{ $status }}</span>
-                  </div>
-                {{ end }}
-              {{ end }}
-
           - type: custom-api
             title: Weather Forecast
             body-type: string
@@ -557,6 +488,129 @@ pages:
                   {{ end }}
                 </div>
               </div>
+
+          - type: bookmarks
+            title: Liens
+            groups:
+              - title: Quotidien
+                color: 157 64 60
+                links:
+                  - title: YouTube
+                    url: https://www.youtube.com
+                    icon: si:youtube
+                  - title: Reddit
+                    url: https://www.reddit.com
+                    icon: si:reddit
+                  - title: Gmail
+                    url: https://mail.google.com
+                    icon: si:gmail
+                  - title: Proton Mail
+                    url: https://mail.proton.me
+                    icon: si:protonmail
+                  - title: Google Drive
+                    url: https://drive.google.com
+                    icon: si:googledrive
+                  - title: Proton Drive
+                    url: https://drive.proton.me
+                    icon: si:protondrive
+                  - title: Claude
+                    url: https://claude.ai
+                    icon: si:anthropic
+
+              - title: Self-hosted
+                color: 200 60 50
+                links:
+                  - title: fs0ciety.org
+                    url: https://fs0ciety.org
+                    icon: https://fs0ciety.org/logo.svg
+                  - title: Blog
+                    url: https://blog.fs0ciety.org
+                    icon: si:ghost
+                  - title: Immich
+                    url: https://photos.fs0ciety.org
+                    icon: sh:immich
+                  - title: Pairdrop
+                    url: https://drop.fs0ciety.org
+                    icon: sh:pairdrop
+                  - title: KitchenOwl
+                    url: https://cook.fs0ciety.org
+                    icon: sh:kitchenowl
+                  - title: Paperless
+                    url: https://docs.fs0ciety.org
+                    icon: sh:paperless-ngx
+                  - title: Gitea
+                    url: https://git.fs0ciety.org
+                    icon: si:gitea
+                  - title: Documenso
+                    url: https://sign.fs0ciety.org
+                    icon: si:docusign
+                  - title: Coolify
+                    url: http://100.122.105.13
+                    icon: sh:coolify
+                  - title: Uptime Kuma
+                    url: ${KUMA_URL}
+                    icon: sh:uptime-kuma
+
+              - title: Media
+                color: 30 80 60
+                links:
+                  - title: Plex NiftyBee
+                    url: ${PLEX_URL}
+                    icon: si:plex
+                  - title: Plex Citadel
+                    url: ${PLEX2_URL}
+                    icon: si:plex
+                  - title: Sonarr
+                    url: ${SONARR_URL}
+                    icon: si:sonarr
+                  - title: Radarr
+                    url: ${RADARR_URL}
+                    icon: si:radarr
+                  - title: Jellyseerr
+                    url: ${JELLYSEERR_URL}
+                    icon: sh:jellyseerr
+                  - title: qBittorrent
+                    url: ${QBIT_URL}
+                    icon: si:qbittorrent
+                  - title: SABnzbd
+                    url: ${SABNZBD_URL}
+                    icon: sh:sabnzbd
+
+          - type: custom-api
+            title: NBA Scores
+            cache: 15m
+            url: https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard
+            headers:
+              Accept: application/json
+            template: |
+              {{ $events := .JSON.Array "events" }}
+              {{ if eq (len $events) 0 }}
+                <p class="size-h5 color-subdue" style="text-align:center;">No games today</p>
+              {{ else }}
+                {{ range $events }}
+                  {{ $comp := index (.Array "competitions") 0 }}
+                  {{ $home := index ($comp.Array "competitors") 0 }}
+                  {{ $away := index ($comp.Array "competitors") 1 }}
+                  {{ $status := $comp.String "status.type.shortDetail" }}
+                  <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--color-separator);">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <img src="{{ $away.String "team.logo" }}" style="width:20px; height:20px;" />
+                      <span class="size-h5">{{ $away.String "team.abbreviation" }}</span>
+                    </div>
+                    <span class="size-h4 color-highlight">{{ $away.String "score" }}</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <img src="{{ $home.String "team.logo" }}" style="width:20px; height:20px;" />
+                      <span class="size-h5">{{ $home.String "team.abbreviation" }}</span>
+                    </div>
+                    <span class="size-h4 color-highlight">{{ $home.String "score" }}</span>
+                  </div>
+                  <div style="text-align:center; padding-bottom:8px; border-bottom:1px solid var(--color-separator); margin-bottom:4px;">
+                    <span class="size-h6 color-subdue">{{ $status }}</span>
+                  </div>
+                {{ end }}
+              {{ end }}
 
           - type: custom-api
             title: Nearby Aircraft
