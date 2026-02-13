@@ -561,6 +561,7 @@ pages:
           - type: custom-api
             title: Portainer
             cache: 1h
+            skip-tls-verification: true
             url: ${PORTAINER_URL}/api/endpoints/${PORTAINER_ENDPOINT_ID}
             headers:
               X-API-Key: ${PORTAINER_API_KEY}
@@ -624,6 +625,19 @@ pages:
                   </div>
                 </div>
               </div>
+
+          - type: server-stats
+            servers:
+              - type: local
+                name: Local
+                hide-mountpoints-by-default: true
+                mountpoints:
+                  "/mnt/storagebox":
+                    name: StorageBox
+                    hide: false
+                  "/mnt/pixeldrain":
+                    name: Pixeldrain
+                    hide: false
 
       - size: full
         widgets:
