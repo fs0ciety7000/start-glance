@@ -66,65 +66,6 @@ pages:
               </div>
 
           - type: custom-api
-            title: Uptime Kuma
-            title-url: ${UPTIME_KUMA_URL}
-            url: ${UPTIME_KUMA_URL}/api/status-page/${UPTIME_KUMA_STATUS_SLUG}
-            subrequests:
-              heartbeats:
-                url: ${UPTIME_KUMA_URL}/api/status-page/heartbeat/${UPTIME_KUMA_STATUS_SLUG}
-            cache: 10m
-            template: |
-              {{ $hb := .Subrequest "heartbeats" }}
-              {{ if not (.JSON.Exists "publicGroupList") }}
-              <p class="color-negative">Error reading response</p>
-              {{ else if eq (len (.JSON.Array "publicGroupList")) 0 }}
-              <p>No monitors found</p>
-              {{ else }}
-              <ul class="dynamic-columns list-gap-8">
-                {{ range .JSON.Array "publicGroupList" }}
-                {{ range .Array "monitorList" }}
-                {{ $id := .String "id" }}
-                {{ $hbArray := $hb.JSON.Array (print "heartbeatList." $id) }}
-                <div class="flex items-center gap-12">
-                  <a class="size-title-dynamic color-highlight text-truncate block grow" href="${UPTIME_KUMA_URL}/dashboard/{{ $id }}"
-                    target="_blank" rel="noreferrer">
-                    {{ .String "name" }} </a>
-                  {{ if gt (len $hbArray) 0 }}
-                    {{ $latest := index $hbArray (sub (len $hbArray) 1) }}
-                    {{ if eq ($latest.Int "status") 1 }}
-                    <div>{{ $latest.Int "ping" }}ms</div>
-                    <div class="monitor-site-status-icon-compact" title="OK">
-                      <svg fill="var(--color-positive)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                          d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
-                          clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                    {{ else }}
-                    <div><span class="color-negative">DOWN</span></div>
-                    <div class="monitor-site-status-icon-compact" title="{{ if $latest.Exists "msg" }}{{ $latest.String "msg" }}{{ else }}Error{{ end }}">
-                      <svg fill="var(--color-negative)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                          d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                          clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                    {{ end }}
-                  {{ else }}
-                    <div><span class="color-negative">No data</span></div>
-                    <div class="monitor-site-status-icon-compact" title="No data available">
-                      <svg fill="var(--color-negative)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                        <path d="M10 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm0-2a6 6 0 1 0 0-12 6 6 0 0 0 0 12zm-.75-8a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-1.5 0V8zm.75 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                      </svg>
-                    </div>
-                  {{ end }}
-                </div>
-                {{ end }}
-                {{ end }}
-              </ul>
-              {{ end }}
-
-          - type: custom-api
             title: Astronomy Picture of the Day
             cache: 1d
             url: https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}
@@ -174,44 +115,6 @@ pages:
       # ── Center column ─────────────────────────────────────────
       - size: full
         widgets:
-          - type: monitor
-            title: Services
-            cache: 5m
-            sites:
-              - title: Immich
-                url: ${IMMICH_URL}
-                icon: sh:immich
-              - title: Pairdrop
-                url: https://drop.fs0ciety.org
-                icon: sh:pairdrop
-              - title: KitchenOwl
-                url: https://cook.fs0ciety.org
-                icon: sh:kitchenowl
-              - title: Paperless
-                url: https://docs.fs0ciety.org
-                icon: sh:paperless-ngx
-              - title: Gitea
-                url: https://git.fs0ciety.org
-                icon: si:gitea
-              - title: Mazanoke
-                url: https://img.fs0ciety.org
-                icon: sh:mazanoke
-              - title: Termix
-                url: https://termix.fs0ciety.org
-                icon: si:gnometerminal
-              - title: Your Spotify
-                url: https://spotify.fs0ciety.org
-                icon: si:spotify
-              - title: Documenso
-                url: https://sign.fs0ciety.org
-                icon: si:docusign
-              - title: Bento PDF
-                url: ${BENTO_PDF_URL}
-                icon: si:adobeacrobatreader
-              - title: Uptime Kuma
-                url: ${KUMA_URL}
-                icon: sh:uptime-kuma
-
           - type: group
             widgets:
               - type: rss
@@ -643,6 +546,182 @@ pages:
                   {{ end }}
                 {{ end }}
               </div>
+
+  # ============================================================
+  #  HOMELAB
+  # ============================================================
+  - name: Homelab
+    slug: homelab
+    width: wide
+
+    columns:
+      - size: small
+        widgets:
+          - type: custom-api
+            title: Portainer
+            cache: 1h
+            url: ${PORTAINER_URL}/api/endpoints/${PORTAINER_ENDPOINT_ID}
+            headers:
+              X-API-Key: ${PORTAINER_API_KEY}
+            template: |
+              <style>
+                .list-horizontal-text.no-bullets > *:not(:last-child)::after {
+                    content: none !important;
+                }
+                .list-horizontal-text.no-bullets > *:not(:last-child) {
+                  margin-right: 1em;
+                }
+              </style>
+              <div style="display:flex; align-items:center; gap:12px;">
+                  <div style="width:40px; height:40px; flex-shrink:0; display:flex; justify-content:center; align-items:center; overflow:hidden;">
+                    <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/portainer-dark.svg" width="24" height="24" style="object-fit:contain;">
+                  </div>
+                  <div style="flex-grow:1; min-width:0;">
+                    <a class="size-h4 block text-truncate color-highlight">
+                      {{ .JSON.String "Name" }}
+                      <span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--color-positive); display: inline-block; vertical-align: middle;"></span>
+                    </a>
+                    <ul class="list-horizontal-text no-bullets">
+                      <li data-popover-type="text" data-popover-text="Containers: {{ .JSON.Int "Snapshots.0.ContainerCount" }}">
+                        <p style="display:inline-flex;align-items:center;">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="height:1em;vertical-align:middle;margin-right:0.5em;" class="size-6 lucide lucide-box icon inline-flex" aria-hidden="true" role="img"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                          {{ .JSON.Int "Snapshots.0.ContainerCount" }}
+                        </p>
+                      </li>
+                      <li data-popover-type="text" data-popover-text="Volumes: {{ .JSON.Int "Snapshots.0.VolumeCount" }}">
+                        <p style="display:inline-flex;align-items:center;">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="height:1em;vertical-align:middle;margin-right:0.5em;" class="size-6 lucide lucide-database icon inline-flex" aria-hidden="true" role="img"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg>
+                          {{ .JSON.Int "Snapshots.0.VolumeCount"  }}
+                        </p>
+                      </li>
+                      <li data-popover-type="text" data-popover-text="Networks: {{ .JSON.Int "Snapshots.0.DockerSnapshotRaw.Networks.#" }}">
+                        <p style="display:inline-flex;align-items:center;">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="height:1em;vertical-align:middle;margin-right:0.5em;" class="size-6 lucide lucide-network icon inline-flex" aria-hidden="true" role="img"><rect x="16" y="16" width="6" height="6" rx="1"></rect><rect x="2" y="16" width="6" height="6" rx="1"></rect><rect x="9" y="2" width="6" height="6" rx="1"></rect><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"></path><path d="M12 12V8"></path></svg>
+                          {{ .JSON.Int "Snapshots.0.DockerSnapshotRaw.Networks.#" }}
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
+              </div>
+              <div class="margin-block-2" style="margin-top: 1em">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                  <div>
+                    <div class="size-h5">Running</div>
+                    <div class="size-h3 color-highlight">{{ .JSON.Int "Snapshots.0.RunningContainerCount" }}</div>
+                  </div>
+                  <div>
+                    <div class="size-h5">Healthy</div>
+                    <div class="size-h3 color-highlight">{{ .JSON.Int "Snapshots.0.HealthyContainerCount" }}</div>
+                  </div>
+                  <div>
+                    <div class="size-h5">Stopped</div>
+                    <div class="size-h3 color-highlight">{{ .JSON.Int "Snapshots.0.StoppedContainerCount" }}</div>
+                  </div>
+                  <div>
+                    <div class="size-h5">Unhealthy</div>
+                    <div class="size-h3 color-highlight">{{ .JSON.Int "Snapshots.0.DockerSnapshotRaw.Containers.#(Health=\"unhealthy\").#" }}</div>
+                  </div>
+                </div>
+              </div>
+
+      - size: full
+        widgets:
+          - type: custom-api
+            title: Uptime Kuma
+            title-url: ${UPTIME_KUMA_URL}
+            url: ${UPTIME_KUMA_URL}/api/status-page/${UPTIME_KUMA_STATUS_SLUG}
+            subrequests:
+              heartbeats:
+                url: ${UPTIME_KUMA_URL}/api/status-page/heartbeat/${UPTIME_KUMA_STATUS_SLUG}
+            cache: 10m
+            template: |
+              {{ $hb := .Subrequest "heartbeats" }}
+              {{ if not (.JSON.Exists "publicGroupList") }}
+              <p class="color-negative">Error reading response</p>
+              {{ else if eq (len (.JSON.Array "publicGroupList")) 0 }}
+              <p>No monitors found</p>
+              {{ else }}
+              <ul class="dynamic-columns list-gap-8">
+                {{ range .JSON.Array "publicGroupList" }}
+                {{ range .Array "monitorList" }}
+                {{ $id := .String "id" }}
+                {{ $hbArray := $hb.JSON.Array (print "heartbeatList." $id) }}
+                <div class="flex items-center gap-12">
+                  <a class="size-title-dynamic color-highlight text-truncate block grow" href="${UPTIME_KUMA_URL}/dashboard/{{ $id }}"
+                    target="_blank" rel="noreferrer">
+                    {{ .String "name" }} </a>
+                  {{ if gt (len $hbArray) 0 }}
+                    {{ $latest := index $hbArray (sub (len $hbArray) 1) }}
+                    {{ if eq ($latest.Int "status") 1 }}
+                    <div>{{ $latest.Int "ping" }}ms</div>
+                    <div class="monitor-site-status-icon-compact" title="OK">
+                      <svg fill="var(--color-positive)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                          d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
+                          clip-rule="evenodd"></path>
+                      </svg>
+                    </div>
+                    {{ else }}
+                    <div><span class="color-negative">DOWN</span></div>
+                    <div class="monitor-site-status-icon-compact" title="{{ if $latest.Exists "msg" }}{{ $latest.String "msg" }}{{ else }}Error{{ end }}">
+                      <svg fill="var(--color-negative)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                          d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                          clip-rule="evenodd"></path>
+                      </svg>
+                    </div>
+                    {{ end }}
+                  {{ else }}
+                    <div><span class="color-negative">No data</span></div>
+                    <div class="monitor-site-status-icon-compact" title="No data available">
+                      <svg fill="var(--color-negative)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M10 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm0-2a6 6 0 1 0 0-12 6 6 0 0 0 0 12zm-.75-8a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-1.5 0V8zm.75 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                      </svg>
+                    </div>
+                  {{ end }}
+                </div>
+                {{ end }}
+                {{ end }}
+              </ul>
+              {{ end }}
+
+          - type: monitor
+            title: Services
+            cache: 5m
+            sites:
+              - title: Immich
+                url: ${IMMICH_URL}
+                icon: sh:immich
+              - title: Pairdrop
+                url: https://drop.fs0ciety.org
+                icon: sh:pairdrop
+              - title: KitchenOwl
+                url: https://cook.fs0ciety.org
+                icon: sh:kitchenowl
+              - title: Paperless
+                url: https://docs.fs0ciety.org
+                icon: sh:paperless-ngx
+              - title: Gitea
+                url: https://git.fs0ciety.org
+                icon: si:gitea
+              - title: Mazanoke
+                url: https://img.fs0ciety.org
+                icon: sh:mazanoke
+              - title: Termix
+                url: https://termix.fs0ciety.org
+                icon: si:gnometerminal
+              - title: Your Spotify
+                url: https://spotify.fs0ciety.org
+                icon: si:spotify
+              - title: Documenso
+                url: https://sign.fs0ciety.org
+                icon: si:docusign
+              - title: Bento PDF
+                url: ${BENTO_PDF_URL}
+                icon: si:adobeacrobatreader
+              - title: Uptime Kuma
+                url: ${KUMA_URL}
+                icon: sh:uptime-kuma
 
   # ============================================================
   #  MEDIA
