@@ -631,6 +631,9 @@ pages:
                 name: Local
                 hide-mountpoints-by-default: true
                 mountpoints:
+                  "/":
+                    name: Root
+                    hide: false
                   "/mnt/storagebox":
                     name: StorageBox
                     hide: false
