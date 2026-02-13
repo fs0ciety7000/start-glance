@@ -388,7 +388,7 @@ pages:
               color_blue: "#46F0F0"
               color_white: "#FFFFFF"
             template: |
-               {{/* Weather widget – fully customizable via options */}}
+              {{/* Weather widget – fully customizable via options */}}
               {{ $temp_unit := .Options.StringOr "temp_unit" "celsius" }}
               {{ $weekend_color := .Options.StringOr "weekend_color" "var(--color-separator)" }}
               {{ $overlay_color := .Options.StringOr "overlay_color" "hsl(var(--bghs), var(--bgl), 50%)" }}
