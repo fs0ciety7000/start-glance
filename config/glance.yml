@@ -235,10 +235,11 @@ pages:
             title: YouTube
             cache: 1h
             channels:
-              - UC9x0AN7BWHpCDHSm9NiJFJQ  # NetworkChuck
-              - UCsBjURrPoezykLs9EqgamOA  # Fireship
-              - UCOk-gHyjcWZNj3Br4oxwh0A  # Techno Tim
-              - UCR-DXc1voqFVjKEmpFk7jQg  # Jeff Geerling
+              - UCus9EeXDcLaCJhVXYd6PJcg  # MisterMV
+              - UCMQSwUNSnMOP4IRysfeg8EA  # SimonPuech
+              - UC3zTd1p0iaS-ALWH0mLbV7A  # 
+              - UC-wzCLovRXvXrXXF7vFpW5A  # 
+              - UCseGV3amBLISlIOMQodPfVQ
 
       # ── Right column ──────────────────────────────────────────
       - size: small
