@@ -625,6 +625,19 @@ pages:
                 </div>
               </div>
 
+          - type: server-stats
+            servers:
+              - type: local
+                name: Local
+                hide-mountpoints-by-default: true
+                mountpoints:
+                  "/mnt/storagebox":
+                    name: StorageBox
+                    hide: false
+                  "/mnt/pixeldrain":
+                    name: Pixeldrain
+                    hide: false
+
       - size: full
         widgets:
           - type: custom-api
